@@ -45,8 +45,9 @@
                                 placeholder="Password" value="{{ $data->password }}">
                         </div>
 
-                        <div class="form-group mb-3">
+                        <div class="form-group mb-3 d-flex">
                             <input type="submit" class="btn btn-primary" value="Edit">
+                            <a class="nav-link px-9" href="{{ route('changePassword') }}">Change Password </a>
                         </div>
                     </form>
                 </div>

@@ -11,34 +11,28 @@
                 <div class="col-md-4">
                     <div class="card">
                         <div class="card-header">
-                            <h1> Login </h1>
-                            You Can login here.
+                            <h1> Reset Password </h1>
+                            You Can Reset your password here.
                         </div>
                         <div class="card-body">
-                            <form action="{{ route('sample.validate_login') }}" method="POST">
+                            <form action="{{ route('resetPassword') }}" method="POST">
                                 @csrf
                                 <div class="form-group mb-3">
-                                    <input type="text" name="email" class="form-control" placeholder="Enter Email" />
-                                    @if ($errors->has('email'))
-                                        <span class="text-danger">{{ $errors->first('email') }}
-                                        </span>
-                                    @endif
-                                </div>
-
-                                <div class="form-group mb-3">
+                                    <input type="hidden" name="id" value="{{ $data }}" />
                                     <input type="password" name="password" class="form-control"
                                         placeholder="Enter Password" />
-                                    @if ($errors->has('password'))
-                                        <span class="text-danger">{{ $errors->first('password') }}
+                                    <input type="password" name="password_confirmation" class="form-control"
+                                        placeholder="Enter Confirm Password" />
+                                    {{-- @if ($errors->has('email'))
+                                        <span class="text-danger">{{ $errors->first('email') }}
                                         </span>
-                                    @endif
+                                    @endif --}}
                                 </div>
 
                                 <div class="d-grid mx-auto">
-                                    <button type="submit" class="btn btn-dark btn-block"> Login </button>
+                                    <button type="submit" class="btn btn-dark btn-block"> Reset Password </button>
                                 </div>
                             </form>
-                            <a href="/forget-password">Forget Password</a>
                         </div>
                     </div>
                 </div>

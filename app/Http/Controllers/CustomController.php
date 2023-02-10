@@ -3,9 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Mail\ForgetPasswordMail;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Models\PasswordReset;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 
 class CustomController extends Controller
@@ -73,5 +78,88 @@ class CustomController extends Controller
         Session::flush();
         Auth::logout();
         return redirect('login')->with('success', 'You are successfully logout');
+    }
+
+    public function forget()
+    {
+        return view('auth.forget-password');
+    }
+
+    public function forgetPassword(Request $request)
+    {
+
+        $user = User::where('email', $request->email)->first();
+
+        $token = Str::random(40);
+        $domain = URL::to('/');
+        $url = $domain . '/reset-password?token=' . $token;
+        if ($user) {
+
+            $data['url'] = $url;
+            $data['email'] = $user->email;
+            $data['title'] = 'Password Reset';
+            $data['body'] = 'Please click on below link to reset password ';
+
+            PasswordReset::create([
+                'email' => $user->email,
+                'token' => $token
+            ]);
+
+            Mail::to($user->email)->send(new ForgetPasswordMail($data));
+
+            return back()->with('success', 'Please check your mail to reset your password');
+        } else {
+            return back()->with('error', 'Email Not Exists!');
+        }
+    }
+
+    public function reset(Request $request)
+    {
+        $pwd = PasswordReset::where('token', $request->token)->first();
+
+        if ($pwd) {
+            $user = User::where('email', $pwd->email)->first();
+            $pwd->delete();
+            return view('auth.resetPassword', ['data' => $user]);
+        } else {
+            return view('404');
+        }
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'password' => 'required|string|min:6|confirmed'
+        ]);
+
+        $user = User::findOrFail($request->id);
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        User::where('email', $user->email)->delete();
+        return "Your Password has been Reset Successfully.";
+    }
+
+    public function changePassword()
+    {
+        return view('auth.change-password');
+    }
+
+    public function updatePassword(Request $request)
+    {
+
+        $request->validate([
+            'old_password' => 'required',
+            'new_password' => 'required|confirmed',
+        ]);
+
+        if (!Hash::check($request->old_password, auth()->user()->password)) {
+            return back()->with("error", "Old Password Doesn't match!");
+        }
+
+        User::whereId(auth()->user()->id)->update([
+            'password' => Hash::make($request->new_password)
+        ]);
+        return back()->with("status", "Password changed successfully!");
     }
 }

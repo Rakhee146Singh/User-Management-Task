@@ -14,6 +14,7 @@
                 <div class="card-header">Add New Employee</div>
                 <div class="card-body">
                     <form method="POST" action="{{ route('employee.add_validation') }}">
+                        @csrf
                         <div class="form-group mb-3">
                             <input type="text" name="name" class="form-control" placeholder="Enter Name" />
                             @if ($errors->has('name'))

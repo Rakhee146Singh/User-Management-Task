@@ -5,17 +5,23 @@
             {{ session()->get('error') }}
         </div>
     @endif
+
+    @if (session()->has('success'))
+        <div class="alert alert-success">
+            {{ session()->get('success') }}
+        </div>
+    @endif
     <main class="login-form">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-4">
                     <div class="card">
                         <div class="card-header">
-                            <h1> Login </h1>
-                            You Can login here.
+                            <h1> Forget Password </h1>
+                            You Can get your password here.
                         </div>
                         <div class="card-body">
-                            <form action="{{ route('sample.validate_login') }}" method="POST">
+                            <form action="{{ route('forgetPassword') }}" method="POST">
                                 @csrf
                                 <div class="form-group mb-3">
                                     <input type="text" name="email" class="form-control" placeholder="Enter Email" />
@@ -25,20 +31,11 @@
                                     @endif
                                 </div>
 
-                                <div class="form-group mb-3">
-                                    <input type="password" name="password" class="form-control"
-                                        placeholder="Enter Password" />
-                                    @if ($errors->has('password'))
-                                        <span class="text-danger">{{ $errors->first('password') }}
-                                        </span>
-                                    @endif
-                                </div>
-
                                 <div class="d-grid mx-auto">
-                                    <button type="submit" class="btn btn-dark btn-block"> Login </button>
+                                    <button type="submit" class="btn btn-dark btn-block"> Forget Password </button>
                                 </div>
                             </form>
-                            <a href="/forget-password">Forget Password</a>
+                            <a href="login">Login</a>
                         </div>
                     </div>
                 </div>

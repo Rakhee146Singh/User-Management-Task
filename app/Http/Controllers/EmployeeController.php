@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Yajra\DataTables\DataTables;
+use Yajra\DataTables\Facades\DataTables;
 
 class EmployeeController extends Controller
 {
@@ -16,6 +16,7 @@ class EmployeeController extends Controller
 
     public function index()
     {
+        // $datas = User::all();
         return view('employee');
     }
 
@@ -26,7 +27,7 @@ class EmployeeController extends Controller
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    return '<a href="/employee/edit' . $row->id . '"class="btn btn-primary btn-sm">Edit</a>&nbsp;<button type="button" class="btn btn-danger btn-sm delete" data-id="' . $row->id . '">Delete</button>';
+                    return '<a href="/employee/edit/' . $row->id . '"class="btn btn-primary btn-sm">Edit</a>&nbsp;<button type="button" class="btn btn-danger btn-sm delete" data-id="' . $row->id . '">Delete</button>';
                 })
                 ->rawColumns(['action'])
                 ->make(true);
@@ -43,8 +44,8 @@ class EmployeeController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'email' => 'required',
-            'password' => 'required'
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:6'
         ]);
         $data = $request->all();
         User::create([
