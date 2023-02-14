@@ -5,82 +5,69 @@ namespace App\Http\Controllers;
 use App\Models\City;
 use App\Models\State;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class CityController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $city = City::all();
         return view('city/list', ['cities' => $city]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function store(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = City::all();
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    return '<a href="/city/edit/' . $row->id . '"class="btn btn-primary btn-sm">Edit</a>&nbsp;<button type="button" class="btn btn-danger btn-sm delete" data-id="' . $row->id . '">Delete</button>';
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+    }
+
     public function create(Request $request)
     {
-        $city = new City;
-        $city->state_id = $request->state;
-        $city->city = $request->city;
-        $city->save();
-        return redirect('city');
+        // $state = State::findOrFail($request->state)->get();
+        // dd($state);
+        $request->validate([
+            'city' => 'required|max:30'
+        ]);
+        $data = $request->all();
+        City::create([
+            'state_id' => $data['state'],
+            'city' => $data['city'],
+        ]);
+        return redirect('city')->with('success', ' Data Inserted Successfully');
     }
-    /**
-     * Store a newly created account in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function createPage()
+
+    public function save()
     {
         $state = State::all();
         return view('city/index', ['states' => $state]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Company  $company
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         $city = City::find($id);
         return view('city/edit', ['cities' => $city]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Company  $company
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         $city = City::find($id);
         $city->state_id = $request->state;
         $city->city = $request->city;
         $city->save();
-        return redirect('city');
+        return redirect('city')->with('success', ' Data Updated Successfully');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Company  $company
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         City::findOrFail($id)->delete();
-        return redirect('city');
+        return redirect('city')->with('success', 'City Data Deleted Successfully');
     }
 }

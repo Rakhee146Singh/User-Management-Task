@@ -14,6 +14,8 @@
                 <div class="card-header">Edit Employee</div>
                 <div class="card-body">
                     <form method="POST" action="{{ route('employee.edit_validation') }}">
+                        @csrf
+
                         <div class="form-group mb-3">
                             <input type="text" name="name" class="form-control" placeholder="Enter Name"
                                 value="{{ $data->name }}" />
@@ -32,13 +34,13 @@
                             @endif
                         </div>
 
-                        <div class="form-group mb-3">
+                        {{-- <div class="form-group mb-3">
                             <input type="password" name="password" class="form-control" placeholder="Enter Password" />
                             @if ($errors->has('password'))
                                 <span class="text-danger">{{ $errors->first('password') }}
                                 </span>
                             @endif
-                        </div>
+                        </div> --}}
 
                         <div class="d-grid mx-auto">
                             <input type="hidden" name="hidden_id" value="{{ $data->id }}">

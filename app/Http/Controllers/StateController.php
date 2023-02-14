@@ -5,82 +5,68 @@ namespace App\Http\Controllers;
 use App\Models\State;
 use App\Models\Country;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class StateController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $state = State::all();
         return view('state/list', ['states' => $state]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function store(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = State::all();
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    return '<a href="/state/edit/' . $row->id . '"class="btn btn-primary btn-sm">Edit</a>&nbsp;<button type="button" class="btn btn-danger btn-sm delete" data-id="' . $row->id . '">Delete</button>';
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+    }
+
     public function create(Request $request)
     {
-        $state = new State;
-        $state->country_id = $request->country;
-        $state->state = $request->state;
-        $state->save();
-        return redirect('state');
+        $request->validate([
+            'state' => 'required|max:30'
+        ]);
+        $data = $request->all();
+        State::create([
+            'country_id' => $data['country'],
+            'state' => $data['state'],
+        ]);
+        return redirect('state')->with('success', ' Data Inserted Successfully');
     }
-    /**
-     * Store a newly created account in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function createPage()
+
+    public function save()
     {
         $country = Country::all();
         return view('state/index', ['countries' => $country]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Company  $company
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         $state = State::find($id);
         return view('state/edit', ['states' => $state]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Company  $company
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         $state = State::find($id);
         $state->country_id = $request->country;
         $state->state = $request->state;
         $state->save();
-        return redirect('state');
+        return redirect('state')->with('success', ' Data Updated Successfully');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Company  $company
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        State::findOrFail($id)->delete();
-        return redirect('state');
+        $data = State::findOrFail($id);
+        $data->delete();
+        return redirect('state')->with('success', 'State Data Deleted Successfully');
     }
 }

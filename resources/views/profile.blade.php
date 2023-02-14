@@ -13,12 +13,31 @@
                 {{ session()->get('success') }}
             </div>
         @endif
-        <div class="col-md-4">
+        <div class="col-md-5">
             <div class="card">
-                <div class="card-header">Edit Employee</div>
+                <div class="card-header">Employee</div>
                 <div class="card-body">
-                    <form method="POST" action="{{ route('profile.edit_validation') }}">
+                    <form method="POST" action="{{ route('profile.edit_validation') }}" enctype="multipart/form-data">
                         @csrf
+                        <div class="text-center">
+                            <img src="{{ asset('storage/profiles/' . $data->profile_image) }}" height="90px" width="100px"
+                                alt="no image" style="border-radius:120px">
+                            <br>
+                            {{ Auth::user()->name }}
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="profile_image">{{ __('Change Image') }}</label>
+                            <input id="profile_image" type="file"
+                                class="form-control @error('profile_image') is-invalid @enderror" name="profile_image"
+                                value="{{ $data->profile_image }}"required autocomplete="profile_image">
+                            @error('profile_image')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+
                         <div class="form-group mb-3">
                             <label for="name">User Name</label>
                             <input type="text" name="name" id="name" class="form-control" placeholder="Name"
@@ -37,12 +56,6 @@
                                 <span class="text-danger">{{ $errors->first('email') }}
                                 </span>
                             @endif
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label for="password">Password</label>
-                            <input type="password" name="password" id="password" class="form-control"
-                                placeholder="Password" value="{{ $data->password }}">
                         </div>
 
                         <div class="form-group mb-3 d-flex">

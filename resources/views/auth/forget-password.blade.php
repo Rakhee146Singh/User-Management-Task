@@ -14,10 +14,11 @@
     <main class="login-form">
         <div class="container">
             <div class="row justify-content-center">
+                <h1 class="mt-4 mb-5 text-center">User Management System</h1>
                 <div class="col-md-4">
                     <div class="card">
                         <div class="card-header">
-                            <h1> Forget Password </h1>
+                            <h3> Forget Password </h3>
                             You Can get your password here.
                         </div>
                         <div class="card-body">

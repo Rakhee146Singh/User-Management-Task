@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>User Management System</title>
     {{-- <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}" /> --}}
@@ -31,8 +32,10 @@
             </button>
             <div class="navbar-nav">
                 <div class="nav-item text-nowrap">
-                    <a class="nav-link px-3" href="#">Welcome,{{ Auth::user()->name }} </a>
 
+                    <a class="nav-link px-3" href="#">Welcome,{{ Auth::user()->name }}
+                        <img src="{{ asset('storage/profiles/' . Auth::user()->profile_image) }}" height="50px"
+                            width="50px" alt="no image" style="border-radius:20px"></a>
                 </div>
             </div>
         </header>
@@ -40,7 +43,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-3">
-                    <nav id="sidebarMenu" class=" d-md-block bg-light sidebar collapse" style="height:100vh;">
+                    <nav id="sidebarMenu" class=" d-md-block bg-light sidebar collapse" style="height:93vh;">
                         <div class="position-sticky pt-3">
                             <ul class="nav flex-column">
                                 <li class="nav-item">
@@ -79,9 +82,9 @@
 
     @endguest
     <script src="{{ asset('js/bootstrap.js') }}"></script>
-    {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous">
-    </script> --}}
+    </script>
 </body>
 
 </html>

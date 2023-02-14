@@ -18,7 +18,8 @@
                 <div class="row">
                     <div class="col col-md-6">Country Management </div>
                     <div class="col col-md-6">
-                        <a href="{{ url('country/create') }}" class="btn btn-success btn-sm float-end">Add Country</a>
+                        <a href="jaavscript:void(0)" class="btn btn-success btn-sm float-end" id="createNewCountry">Add
+                            Country</a>
                     </div>
                 </div>
             </div>
@@ -26,8 +27,9 @@
                 <div class="table-responsive">
                     <table class="table table-bordered" border="1" id="country_table">
                         <thead>
-                            <th> Country Name</th>
-                            <th>Actions</th>
+                            <th> Id </th>
+                            <th> Country Name </th>
+                            <th> Actions </th>
                         </thead>
                         <tbody>
                         </tbody>
@@ -36,6 +38,34 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="ajaxModel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modelHeading"></h4>
+                </div>
+                <div class="modal-body">
+                    <form id="countryForm" name="countryForm" class="form-horizontal">
+                        <input type="hidden" name="country_id" id="country_id">
+                        <div class="form-group">
+                            <label for="name" class="col-sm control-label"> Country Name</label><br>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" id="country" name="country"
+                                    placeholder="Enter  Country Name" value="" maxlength="50" required="">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-primary" id="saveBtn" value="create">Save
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.5.0.js" integrity="sha256-r/AaFHrszJtwpe+tHyNi/XCfMxYpbsRg2Uqn0x3s2zc="
         crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
@@ -48,22 +78,23 @@
     <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
 
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
             var table = $('#country_table').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ url('country/create') }}",
+                ajax: "{{ url('country') }}",
                 columns: [{
-                        data: 'name',
-                        name: 'name'
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex'
                     },
                     {
-                        data: 'created_at',
-                        name: 'created_at'
-                    },
-                    {
-                        data: 'updated_at',
-                        name: 'updated_at'
+                        data: 'country',
+                        name: 'country'
                     },
                     {
                         data: 'action',
@@ -73,82 +104,68 @@
                     }
                 ]
             });
-            $(document).on('click', '.delete', function() {
-                var id = $(this).data('id');
-                if (confirm("Are you sure you want to delete it?")) {
-                    window.location.href = "/employee/delete/" + id;
-                }
+
+            $('#createNewCountry').click(function() {
+                $('#country_id').val('');
+                $('#countryForm').trigger("reset");
+                $('#modelHeading').html("Create New Country");
+                $('#ajaxModel').modal('show');
+                // $('#saveBtn').val("create-country");
             });
+
+            // $('body').on('click', '.editProduct', function() {
+            //     var country_id = $(this).data('id');
+            //     $.get("{{ route('products-ajax-crud.index') }}" + '/' + country_id + '/edit', function(
+            //         data) {
+            //         $('#modelHeading').html("Edit Country");
+            //         $('#saveBtn').val("edit-country");
+            //         $('#ajaxModel').modal('show');
+            //         $('#country_id').val(data.id);
+            //         $('#country').val(data.country);
+            //         // $('#detail').val(data.detail);
+            //     })
+            // });
+
+            $('#saveBtn').click(function(e) {
+                e.preventDefault();
+                $(this).html('Save');
+
+                $.ajax({
+                    data: $('#countryForm').serialize(),
+                    url: "{{ url('country/store') }}",
+                    type: "POST",
+                    dataType: 'json',
+                    success: function(data) {
+
+                        $('#countryForm').trigger("reset");
+                        $('#ajaxModel').modal('hide');
+                        table.draw();
+
+                    },
+                    error: function(data) {
+                        console.log('Error:', data);
+                        $('#saveBtn').html('Save');
+                    }
+                });
+            });
+
+            // $('body').on('click', '.deleteProduct', function() {
+
+            //     var country_id = $(this).data("id");
+            //     if (confirm("Are You sure want to delete !"))
+
+            //         $.ajax({
+            //             type: "DELETE",
+            //             url: "{{ route('products-ajax-crud.store') }}" + '/' + country_id,
+            //             success: function(data) {
+            //                 table.draw();
+            //             },
+            //             error: function(data) {
+            //                 console.log('Error:', data);
+            //             }
+            //         });
+            // });
+
         });
     </script>
 @endsection
-
-{{-- @extends('dashboard')
-@section('content')
-    <div class="container-fluid">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-
-                    <div class="card-body">
-                        <div class="row-12">
-                            <a href="{{ url('country/create') }}" class="btn btn-success float-right">Add
-                                Country</a>
-                        </div>
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Country Name</th>
-                                    <th scope="col">Edit</th>
-                                    <th scope="col">Delete</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($countries as $country)
-                                    <tr>
-                                        <th>{{ $country->country }}</th>
-                                        <td>
-                                            <a href="{{ url('country/edit', ['id' => $country->id]) }}"
-                                                class="btn btn-info btn-sm">EDIT</a>
-                                        </td>
-                                        <td>
-                                            <form method="POST" action="{{ url('country/delete', $country->id) }}">
-                                                @csrf
-                                                <input name="_method" type="hidden" value="DELETE">
-                                                <button type="submit" class="btn btn-sm btn-danger btn-flat show_confirm"
-                                                    data-toggle="tooltip" title='Delete'>Delete</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous">
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
-    <script type="text/javascript">
-        $('.show_confirm').click(function(event) {
-            var form = $(this).closest("form");
-            var name = $(this).data("name");
-            event.preventDefault();
-            swal({
-                    title: `Are you sure you want to delete this record?`,
-                    text: "If you delete this, it will be gone forever.",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                })
-                .then((willDelete) => {
-                    if (willDelete) {
-                        form.submit();
-                    }
-                });
-        });
-    </script>
-@endsection --}}

@@ -29,7 +29,7 @@ class CustomController extends Controller
 
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
-            return redirect()->intended('dashboard')->withSuccess('Login');
+            return redirect()->intended('dashboard')->withSuccess('Login Successfully');
         }
         return redirect('login')->with('success', 'Login details are not valid.');
     }
@@ -45,21 +45,20 @@ class CustomController extends Controller
             'name' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
-            // 'profile_image' => 'required'
+            'profile_image' => 'required'
         ]);
-        // if ($request->hasFile('profile_image')) {
-        //     $imageName = str_replace(".", "", (string)microtime(true)) . '.' . $request->profile_image->getClientOriginalExtension();
-        //     $request->profile_image->storeAs("public/profiles", $imageName);
-        // }
+        if ($request->hasFile('profile_image')) {
+            $imageName = str_replace(".", "", (string)microtime(true)) . '.' . $request->profile_image->getClientOriginalExtension();
+            $request->profile_image->storeAs("public/profiles", $imageName);
+        }
 
         $data = $request->all();
-
         User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'roles' => 'admin'
-            // 'profile_image' => $imageName
+            'profile_image' => $imageName,
+            'roles' => 'employee'
         ]);
 
         return redirect('login')->with('success', 'Registration Completed. Now you can login successfully.');

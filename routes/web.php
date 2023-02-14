@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\StateController;
 use App\Http\Controllers\CustomController;
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\EmployeeController;
@@ -23,7 +24,7 @@ use App\Http\Controllers\EmployeeController;
 */
 
 Route::get('/', function () {
-    // return view('welcome');
+    return view('welcome');
     // return view('auth.login');
 });
 
@@ -50,8 +51,6 @@ Route::controller(ProfileController::class)->group(function () {
 Route::controller(EmployeeController::class)->group(function () {
     Route::get('employee', 'index')->name('employee');
     Route::get('employee/fetchall', 'fetch_all')->name('employee.fetchall');
-    Route::get('employee/add', 'add')->name('employee.add');
-    Route::post('employee/add_validation', 'add_validation')->name('employee.add_validation');
     Route::get('employee/edit/{id}', 'edit')->name('edit');
     Route::post('employee/edit_validation', 'edit_validation')->name('employee.edit_validation');
     Route::get('employee/delete/{id}', 'delete')->name('delete');
@@ -59,27 +58,46 @@ Route::controller(EmployeeController::class)->group(function () {
 
 Route::controller(CountryController::class)->prefix('country')->group(function () {
     Route::get('/', 'index');
-    Route::get('create', 'createPage');
-    Route::post('save', 'create');
-    Route::get('edit/{id}', 'edit');
-    Route::put('update/{id}', 'update');
-    Route::delete('delete/{id}', 'destroy');
+    Route::get('store', 'store');
+    // Route::get('create', 'save');
+    // Route::post('save', 'create');
+    // Route::get('edit/{id}', 'edit');
+    // Route::put('update/{id}', 'update');
+    // Route::get('delete/{id}', 'destroy');
 });
 
 Route::controller(StateController::class)->prefix('state')->group(function () {
     Route::get('/', 'index');
-    Route::get('create', 'createPage');
+    Route::get('store', 'store');
+    Route::get('create', 'save');
     Route::post('save', 'create');
     Route::get('edit/{id}', 'edit');
     Route::put('update/{id}', 'update');
-    Route::delete('delete/{id}', 'destroy');
+    Route::get('delete/{id}', 'destroy');
 });
 
 Route::controller(CityController::class)->prefix('city')->group(function () {
     Route::get('/', 'index');
-    Route::get('create', 'createPage');
+    Route::get('store', 'store');
+    Route::get('create', 'save');
     Route::post('save', 'create');
     Route::get('edit/{id}', 'edit');
     Route::put('update/{id}', 'update');
-    Route::delete('delete/{id}', 'destroy');
+    Route::get('delete/{id}', 'destroy');
 });
+
+
+// Route::get('ajax-crud-datatable', [CompanyController::class, 'index']);
+// Route::post('store-company', [CompanyController::class, 'store']);
+// Route::post('edit-company', [CompanyController::class, 'edit']);
+// Route::post('delete-company', [CompanyController::class, 'destroy']);
+
+// Route::get('ajax-crud-datatable', [CountryController::class, 'index']);
+// Route::post('store-country', [CountryController::class, 'store']);
+// Route::post('edit-country', [CountryController::class, 'edit']);
+// Route::post('delete-country', [CountryController::class, 'destroy']);
+
+// Route::resource('ajax-crud-datatable', CountryController::class);
+
+
+Route::resource('products-ajax-crud', CountryController::class);

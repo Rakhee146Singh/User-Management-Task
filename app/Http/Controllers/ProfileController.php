@@ -25,21 +25,17 @@ class ProfileController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required|email',
+            'profile_image' => 'required'
         ]);
+        $imageName = str_replace(".", "", (string)microtime(true)) . '.' . $request->profile_image->getClientOriginalExtension();
+        $request->profile_image->storeAs("public/profiles", $imageName);
 
         $data = $request->all();
-        if (!empty($data['password'])) {
-            $form_data = array(
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'password' => Hash::make($data['password']),
-            );
-        } else {
-            $form_data = array(
-                'name' => $data['name'],
-                'email' => $data['email'],
-            );
-        }
+        $form_data = array(
+            'profile_image' => $imageName,
+            'name' => $data['name'],
+            'email' => $data['email'],
+        );
         User::whereId(Auth::user()->id)->update($form_data);
         return redirect('profile')->with('success', 'Profile Data Updated');
     }

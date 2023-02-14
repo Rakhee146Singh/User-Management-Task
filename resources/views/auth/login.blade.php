@@ -8,10 +8,11 @@
     <main class="login-form">
         <div class="container">
             <div class="row justify-content-center">
+                <h1 class="mt-4 mb-5 text-center">User Management System</h1>
                 <div class="col-md-4">
                     <div class="card">
                         <div class="card-header">
-                            <h1> Login </h1>
+                            <h3> Login </h3>
                             You Can login here.
                         </div>
                         <div class="card-body">
@@ -38,7 +39,8 @@
                                     <button type="submit" class="btn btn-dark btn-block"> Login </button>
                                 </div>
                             </form>
-                            <a href="/forget-password">Forget Password</a>
+                            <a href="/forget-password" style="text-align:center;">Forget Password</a> /
+                            <a href="/register">Register</a>
                         </div>
                     </div>
                 </div>

@@ -16,7 +16,6 @@ class EmployeeController extends Controller
 
     public function index()
     {
-        // $datas = User::all();
         return view('employee');
     }
 
@@ -27,35 +26,12 @@ class EmployeeController extends Controller
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    return '<a href="/employee/edit/' . $row->id . '"class="btn btn-primary btn-sm">Edit</a>&nbsp;<button type="button" class="btn btn-danger btn-sm delete" data-id="' . $row->id . '">Delete</button>';
+                    return '<a href="/employee/edit/' . $row->id . '"class="btn btn-primary btn-sm">Edit</a>&nbsp;
+                        <button type="button" class="btn btn-danger btn-sm delete" data-id="' . $row->id . '">Delete</button>';
                 })
                 ->rawColumns(['action'])
                 ->make(true);
         }
-    }
-
-    public function add()
-    {
-        return view('add_employee');
-    }
-
-
-    public function add_validation(Request $request)
-    {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6'
-        ]);
-        $data = $request->all();
-        User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-            'roles' => 'employee'
-        ]);
-
-        return redirect('employee')->with('success', 'New employee Added Completed.');
     }
 
     public function edit($id)
@@ -71,18 +47,10 @@ class EmployeeController extends Controller
             'email' => 'required',
         ]);
         $data = $request->all();
-        if (!empty($data['password'])) {
-            $form_data = array(
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'password' => Hash::make($data['password']),
-            );
-        } else {
-            $form_data = array(
-                'name' => $data['name'],
-                'email' => $data['email'],
-            );
-        }
+        $form_data = array(
+            'name' => $data['name'],
+            'email' => $data['email'],
+        );
         User::whereId($data['hidden_id'])->update($form_data);
         return redirect('employee')->with('success', 'Employee Data Updated');
     }

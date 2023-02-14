@@ -1,4 +1,4 @@
-@extends('dashboard')
+{{-- @extends('dashboard')
 @section('content')
     <h2 class="mt-3">Employee Management</h2>
     <nav aria-label="breadcrumb">
@@ -48,4 +48,4 @@
             </div>
         </div>
     </div>
-@endsection
+@endsection --}}

@@ -3,6 +3,7 @@
     <main class="signup-form">
         <div class="container">
             <div class="row justify-content-center">
+                <h1 class="mt-4 mb-5 text-center">User Management System</h1>
                 <div class="col-md-4">
                     @if (session()->has('success'))
                         <div class="alert alert-success">
@@ -11,7 +12,8 @@
                     @endif
                     <div class="card">
                         <div class="card-header">
-                            Registration
+                            <h3> Registration </h3>
+                            You Can register here.
                         </div>
                         <div class="card-body">
                             <form action="{{ route('sample.validate_register') }}" method="POST" autocomplete="off"
