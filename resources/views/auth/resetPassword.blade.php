@@ -24,14 +24,15 @@
                                         placeholder="Enter Password" />
                                     <input type="password" name="password_confirmation" class="form-control"
                                         placeholder="Enter Confirm Password" />
-                                    {{-- @if ($errors->has('email'))
-                                        <span class="text-danger">{{ $errors->first('email') }}
+                                    {{-- @if ($errors->has('password'))
+                                        <span class="text-danger">{{ $errors->first('password') }}
                                         </span>
                                     @endif --}}
                                 </div>
 
                                 <div class="d-grid mx-auto">
-                                    <button type="submit" class="btn btn-dark btn-block"> Reset Password </button>
+                                    <button type="submit" class="btn btn-dark btn-block"><i class='fas fa-user-lock'
+                                            style='font-size:20px'></i> Reset Password </button>
                                 </div>
                             </form>
                         </div>

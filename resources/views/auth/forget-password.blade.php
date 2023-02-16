@@ -19,7 +19,8 @@
                     <div class="card">
                         <div class="card-header">
                             <h3> Forget Password </h3>
-                            You Can get your password here.
+                            Please insert your email in the input below and we will send an email with the link to reset
+                            your password.
                         </div>
                         <div class="card-body">
                             <form action="{{ route('forgetPassword') }}" method="POST">
@@ -33,10 +34,11 @@
                                 </div>
 
                                 <div class="d-grid mx-auto">
-                                    <button type="submit" class="btn btn-dark btn-block"> Forget Password </button>
+                                    <button type="submit" class="btn btn-dark btn-block"><i class='fas fa-unlock-alt'
+                                            style='font-size:16px'></i> Forget Password </button>
                                 </div>
                             </form>
-                            <a href="login">Login</a>
+                            <a href="login"><i class='fas fa-unlock' style='font-size:18px'></i> Login</a>
                         </div>
                     </div>
                 </div>

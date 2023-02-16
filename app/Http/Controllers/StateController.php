@@ -9,64 +9,59 @@ use Yajra\DataTables\Facades\DataTables;
 
 class StateController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $state = State::all();
-        return view('state/list', ['states' => $state]);
-    }
-
-    public function store(Request $request)
-    {
+        $country = Country::all();
+        // $data = State::with('country');
+        // // $data = State::all();
+        // dd($data);
         if ($request->ajax()) {
-            $data = State::all();
+            // $country = Country::select('country')->get();
+            $data = State::where(['country_id' => $request->country])->get();
+            // $data = State::all();
             return DataTables::of($data)
                 ->addIndexColumn()
+                // ->addColumn('country', function (State $data) {
+                //     return $data->countries->country;
+                // })
                 ->addColumn('action', function ($row) {
-                    return '<a href="/state/edit/' . $row->id . '"class="btn btn-primary btn-sm">Edit</a>&nbsp;<button type="button" class="btn btn-danger btn-sm delete" data-id="' . $row->id . '">Delete</button>';
+                    $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $row->id . '" data-original-title="Edit" class="edit btn btn-primary btn-sm editState">Edit</a> &nbsp;';
+                    $btn = $btn . '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $row->id . '" data-original-title="Delete" class="btn btn-danger btn-sm deleteState">Delete</a>';
+                    return $btn;
                 })
                 ->rawColumns(['action'])
                 ->make(true);
         }
+        return view('state.crud', ['countries' => $country]);
     }
 
-    public function create(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
-            'state' => 'required|max:30'
+            'state' => 'required|alpha|max:30'
         ]);
-        $data = $request->all();
-        State::create([
-            'country_id' => $data['country'],
-            'state' => $data['state'],
-        ]);
-        return redirect('state')->with('success', ' Data Inserted Successfully');
-    }
-
-    public function save()
-    {
-        $country = Country::all();
-        return view('state/index', ['countries' => $country]);
+        State::updateOrCreate(
+            [
+                'id' => $request->state_id
+            ],
+            [
+                'country_id' => $request->country_id,
+                'state' => $request->state,
+            ]
+        );
+        return response()->json(['success' => 'State saved successfully.']);
     }
 
     public function edit($id)
     {
-        $state = State::find($id);
-        return view('state/edit', ['states' => $state]);
-    }
-
-    public function update(Request $request, $id)
-    {
-        $state = State::find($id);
-        $state->country_id = $request->country;
-        $state->state = $request->state;
-        $state->save();
-        return redirect('state')->with('success', ' Data Updated Successfully');
+        $state = State::findOrFail($id);
+        return response()->json($state);
     }
 
     public function destroy($id)
     {
-        $data = State::findOrFail($id);
-        $data->delete();
-        return redirect('state')->with('success', 'State Data Deleted Successfully');
+        $state = State::findOrFail($id);
+        $state->delete();
+        return response()->json(['success' => 'State deleted successfully.']);
     }
 }

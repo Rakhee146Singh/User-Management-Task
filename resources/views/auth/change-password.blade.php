@@ -14,7 +14,7 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header">
-                        <h1> Change Password </h1>
+                        <h3> Change Password </h3>
                         You Can change your password here.
                     </div>
                     <form action="{{ route('updatePassword') }}" method="POST">

@@ -18,17 +18,19 @@
                         <div class="card-body">
                             <form action="{{ route('sample.validate_login') }}" method="POST">
                                 @csrf
-                                <div class="form-group mb-3">
+                                <div class="form-floating mb-3 mt-3">
                                     <input type="text" name="email" class="form-control" placeholder="Enter Email" />
+                                    <label for="email">Email</label>
                                     @if ($errors->has('email'))
                                         <span class="text-danger">{{ $errors->first('email') }}
                                         </span>
                                     @endif
                                 </div>
 
-                                <div class="form-group mb-3">
+                                <div class="form-floating mb-4 mt-3">
                                     <input type="password" name="password" class="form-control"
                                         placeholder="Enter Password" />
+                                    <label for="password">Password</label>
                                     @if ($errors->has('password'))
                                         <span class="text-danger">{{ $errors->first('password') }}
                                         </span>
@@ -36,10 +38,12 @@
                                 </div>
 
                                 <div class="d-grid mx-auto">
-                                    <button type="submit" class="btn btn-dark btn-block"> Login </button>
+                                    <button type="submit" class="btn btn-dark btn-block"><i class='fas fa-unlock'
+                                            style='font-size:18px'></i> Login </button>
                                 </div>
                             </form>
-                            <a href="/forget-password" style="text-align:center;">Forget Password</a> /
+                            <a href="/forget-password" style="text-align:center;"><i class='fas fa-unlock-alt'
+                                    style='font-size:16px'></i> Forget Password</a> /
                             <a href="/register">Register</a>
                         </div>
                     </div>

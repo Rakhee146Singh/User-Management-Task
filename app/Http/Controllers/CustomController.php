@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Mail\ForgetPasswordMail;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\PasswordReset;
+use Illuminate\Support\Carbon;
+use App\Mail\ForgetPasswordMail;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -64,13 +65,23 @@ class CustomController extends Controller
         return redirect('login')->with('success', 'Registration Completed. Now you can login successfully.');
     }
 
-    public function dashboard()
-    {
-        if (Auth::check()) {
-            return view('dashboard');
-        }
-        return redirect('login')->with('success', 'You are not allowed to access');
-    }
+    // public function dashboard()
+    // {
+    //     if (Auth::check()) {
+    //         $users = User::select('id', 'created_at')->get()->groupBy(function ($users) {
+    //             return Carbon::parse($users->created_at)->format('M');
+    //         });
+
+    //         $months = [];
+    //         $monthCount = [];
+    //         foreach ($users as $month => $values) {
+    //             $months[] = $month;
+    //             $monthCount[] = count($values);
+    //         }
+    //         return view('dashboard', compact('users', 'months', 'monthCount'));
+    //     }
+    //     return redirect('login')->with('success', 'You are not allowed to access');
+    // }
 
     public function logout()
     {
@@ -160,5 +171,20 @@ class CustomController extends Controller
             'password' => Hash::make($request->new_password)
         ]);
         return back()->with("status", "Password changed successfully!");
+    }
+
+    public function index()
+    {
+        $users = User::select('id', 'created_at')->get()->groupBy(function ($users) {
+            return Carbon::parse($users->created_at)->format('M');
+        });
+
+        $months = [];
+        $monthCount = [];
+        foreach ($users as $month => $values) {
+            $months[] = $month;
+            $monthCount[] = count($values);
+        }
+        return view('charts', compact('users', 'months', 'monthCount'));
     }
 }

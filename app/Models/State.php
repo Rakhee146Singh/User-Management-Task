@@ -12,9 +12,9 @@ class State extends Model
 
     protected $fillable = ['country_id', 'state'];
 
-    public function countries()
+    public function country()
     {
-        $this->belongsTo(Country::class);
+        $this->belongsTo(Country::class, 'country_id');
     }
 
     public function cities()

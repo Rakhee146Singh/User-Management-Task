@@ -9,65 +9,51 @@ use Yajra\DataTables\Facades\DataTables;
 
 class CityController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $city = City::all();
-        return view('city/list', ['cities' => $city]);
-    }
-
-    public function store(Request $request)
-    {
+        $state = State::all();
         if ($request->ajax()) {
             $data = City::all();
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    return '<a href="/city/edit/' . $row->id . '"class="btn btn-primary btn-sm">Edit</a>&nbsp;<button type="button" class="btn btn-danger btn-sm delete" data-id="' . $row->id . '">Delete</button>';
+                    $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $row->id . '" data-original-title="Edit" class="edit btn btn-primary btn-sm editCity">Edit</a> &nbsp;';
+                    $btn = $btn . '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $row->id . '" data-original-title="Delete" class="btn btn-danger btn-sm deleteCity">Delete</a>';
+                    return $btn;
                 })
                 ->rawColumns(['action'])
                 ->make(true);
         }
+        return view('city.crud', ['states' => $state]);
     }
 
-    public function create(Request $request)
+    public function store(Request $request)
     {
-        // $state = State::findOrFail($request->state)->get();
-        // dd($state);
         $request->validate([
-            'city' => 'required|max:30'
+            'city' => 'required|alpha|max:30'
         ]);
-        $data = $request->all();
-        City::create([
-            'state_id' => $data['state'],
-            'city' => $data['city'],
-        ]);
-        return redirect('city')->with('success', ' Data Inserted Successfully');
-    }
-
-    public function save()
-    {
-        $state = State::all();
-        return view('city/index', ['states' => $state]);
+        City::updateOrCreate(
+            [
+                'id' => $request->city_id
+            ],
+            [
+                'state_id' => $request->state_id,
+                'city' => $request->city,
+            ]
+        );
+        return response()->json(['success' => 'City saved successfully.']);
     }
 
     public function edit($id)
     {
-        $city = City::find($id);
-        return view('city/edit', ['cities' => $city]);
-    }
-
-    public function update(Request $request, $id)
-    {
-        $city = City::find($id);
-        $city->state_id = $request->state;
-        $city->city = $request->city;
-        $city->save();
-        return redirect('city')->with('success', ' Data Updated Successfully');
+        $city = City::findOrFail($id);
+        return response()->json($city);
     }
 
     public function destroy($id)
     {
-        City::findOrFail($id)->delete();
-        return redirect('city')->with('success', 'City Data Deleted Successfully');
+        $state = City::findOrFail($id);
+        $state->delete();
+        return response()->json(['success' => 'City deleted successfully.']);
     }
 }

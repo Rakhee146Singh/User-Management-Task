@@ -61,4 +61,27 @@ class EmployeeController extends Controller
         $data->delete();
         return redirect('employee')->with('success', 'Employee Data Deleted Successfully');
     }
+
+    public function records(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = User::all();
+            return response()->json([
+                'users' => $data
+            ]);
+        } else {
+            abort(403);
+        }
+    }
+    // public function destroy($id)
+    // {
+    //     $data = User::find($id);
+    //     $image_path = public_path() . '/' . $data->filename;
+    //     unlink($image_path);
+    //     $data->delete();
+    //     // if(Storage::delete($data->filename)) {
+    //     //     $data->delete();
+    //     //  }
+    //     return redirect('employee');
+    // }
 }

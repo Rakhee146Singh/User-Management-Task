@@ -19,32 +19,35 @@
                             <form action="{{ route('sample.validate_register') }}" method="POST" autocomplete="off"
                                 enctype="multipart/form-data">
                                 @csrf
-                                <div class="form-group mb-3">
+                                <div class="form-floating mb-3 mt-3">
                                     <input type="text" name="name" class="form-control" placeholder="Enter Name" />
+                                    <label for="email">Name</label>
                                     @if ($errors->has('name'))
                                         <span class="text-danger">{{ $errors->first('name') }}
                                         </span>
                                     @endif
                                 </div>
 
-                                <div class="form-group mb-3">
+                                <div class="form-floating mb-3 mt-3">
                                     <input type="text" name="email" class="form-control" placeholder="Enter Email" />
+                                    <label for="email">Email</label>
                                     @if ($errors->has('email'))
                                         <span class="text-danger">{{ $errors->first('email') }}
                                         </span>
                                     @endif
                                 </div>
 
-                                <div class="form-group mb-3">
+                                <div class="form-floating mb-3 mt-3">
                                     <input type="password" name="password" class="form-control"
                                         placeholder="Enter Password" />
+                                    <label for="email">Password</label>
                                     @if ($errors->has('password'))
                                         <span class="text-danger">{{ $errors->first('password') }}
                                         </span>
                                     @endif
                                 </div>
 
-                                <div class="form-group mb-3">
+                                <div class="form-group mb-4 mt-3">
                                     <input type="file" name="profile_image" class="form-control"
                                         placeholder="Upload Profile Image" />
                                     @if ($errors->has('profile_image'))
