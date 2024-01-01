@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -64,10 +65,23 @@ class EmployeeController extends Controller
 
     public function records(Request $request)
     {
+        // dd($request->all());
         if ($request->ajax()) {
-            $data = User::all();
+
+            if ($request->input('start_date') && $request->input('end_date')) {
+
+                $start_date = Carbon::parse($request->input('start_date'));
+                $end_date = Carbon::parse($request->input('end_date'));
+                if ($end_date->greaterThan($start_date)) {
+                    $users = User::whereBetween('created_at', [$start_date, $end_date])->get();
+                } else {
+                    $users = User::latest()->get();
+                }
+            } else {
+                $users = User::latest()->get();
+            }
             return response()->json([
-                'users' => $data
+                'users' => $users
             ]);
         } else {
             abort(403);

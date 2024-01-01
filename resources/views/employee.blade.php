@@ -18,7 +18,7 @@
                 <div class="row">
                     <div class="col col-md-6">Employee Management </div>
                     <div class="col col-md-6">
-                        {{-- <a href="{{ route('employee.add') }}" class="btn btn-success btn-sm float-end">Add</a> --}}
+                        <a href="{{ route('employee') }}" class="btn btn-success btn-sm float-end">Filters</a>
                     </div>
                 </div>
             </div>
@@ -29,11 +29,11 @@
                             <div class="col-6">
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text btn btn-primary text-white" id="basic-addon1"><i
-                                                class="fas fa-calendar-alt"></i></span>
+                                        <span class="input-group-text btn btn-primary text-white" id="basic-addon1">
+                                            <i class="fas fa-calendar-alt"></i>
+                                        </span>
                                     </div>
-                                    <input type="text" class="form-control" id="start_date" placeholder="Start Date"
-                                        readonly>
+                                    <input type="date" class="form-control" id="start_date" placeholder="Start Date">
                                 </div>
                             </div>
                             <div class="col-6">
@@ -42,8 +42,7 @@
                                         <span class="input-group-text btn btn-primary text-white" id="basic-addon1"><i
                                                 class="fas fa-calendar-alt"></i></span>
                                     </div>
-                                    <input type="text" class="form-control" id="end_date" placeholder="End Date"
-                                        readonly>
+                                    <input type="date" class="form-control" id="end_date" placeholder="End Date">
                                 </div>
                             </div>
                         </div>
@@ -59,8 +58,10 @@
                         <table class="table table-bordered" border="1" id="employee_table">
                             <thead>
                                 {{-- <tr> --}}
+                                <th>Id</th>
                                 <th>Name</th>
                                 <th>Email</th>
+                                <th>Roles</th>
                                 <th>Created At</th>
                                 <th>Updated At</th>
                                 <th>Actions</th>
@@ -85,50 +86,57 @@
         <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
 
         <script type="text/javascript">
-            // $(document).ready(function() {
-            //     var table = $('#employee_table').DataTable({
-            //         processing: true,
-            //         serverSide: true,
-            //         ajax: "{{ route('employee.fetchall') }}",
-            //         columns: [{
-            //                 data: 'name',
-            //                 name: 'name'
-            //             }, {
-            //                 data: 'email',
-            //                 name: 'email'
-            //             },
-            //             {
-            //                 data: 'created_at',
-            //                 name: 'created_at'
-            //             },
-            //             {
-            //                 data: 'updated_at',
-            //                 name: 'updated_at'
-            //             },
-            //             {
-            //                 data: 'action',
-            //                 name: 'action',
-            //                 orderable: true,
-            //                 searchable: true
-            //             }
-            //         ]
-            //     });
-            //     $(document).on('click', '.delete', function() {
-            //         var id = $(this).data('id');
-            //         if (confirm("Are you sure you want to delete it?")) {
-            //             window.location.href = "/employee/delete/" + id;
-            //         }
-            //     });
+            $(document).ready(function() {
+                var table = $('#employee_table').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: "{{ route('employee.fetchall') }}",
+                    columns: [{
+                            data: 'id',
+                            name: 'id'
+                        }, {
+                            data: 'name',
+                            name: 'name'
+                        }, {
+                            data: 'email',
+                            name: 'email'
+                        },
+                        {
+                            data: 'roles',
+                            name: 'roles'
+                        },
+                        {
+                            data: 'created_at',
+                            name: 'created_at'
+                        },
+                        {
+                            data: 'updated_at',
+                            name: 'updated_at'
+                        },
+                        {
+                            data: 'action',
+                            name: 'action',
+                            orderable: false,
+                            searchable: false
+                        }
+                    ]
+                });
+                $(document).on('click', '.delete', function() {
+                    var id = $(this).data('id');
+                    if (confirm("Are you sure you want to delete it?")) {
+                        window.location.href = "/employee/delete/" + id;
+                    }
+                });
 
-            // });
-            // $(function() {
-            //     $("#start_date").datepicker({
-            //         "dateFormat": "yy-mm-dd"
-            //     });
-            //     $("#end_date").datepicker({
-            //         "dateFormat": "yy-mm-dd"
-            //     });
-            // });
+            });
+            $(function() {
+                $("#start_date").datepicker({
+                    "dateFormat": "yy-mm-dd"
+                });
+                $("#end_date").datepicker({
+                    "dateFormat": "yy-mm-dd"
+                });
+            });
 
             function fetch(start_date, end_date) {
                 $.ajax({
@@ -165,7 +173,13 @@
                                 {
                                     "data": "created_at",
                                     "render": function(data, type, row, meta) {
-                                        return `${row.created_at}.format('DD-MM-YYYY')`;
+                                        return `${row.created_at}`;
+                                    }
+                                },
+                                {
+                                    "data": "updated_at",
+                                    "render": function(data, type, row, meta) {
+                                        return `${row.updated_at}`;
                                     }
                                 }
                             ]
